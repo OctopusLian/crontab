@@ -5,8 +5,8 @@ import (
 	"crontab/common"
 	"time"
 
-	"github.com/mongodb/mongo-go-driver/mongo"
-	"github.com/mongodb/mongo-go-driver/mongo/clientopt"
+	"go.mongodb.org/mongo-driver/mongo"
+	//
 )
 
 // mongodb存储日志
