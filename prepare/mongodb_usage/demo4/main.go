@@ -1,47 +1,46 @@
 package main
 
 import (
-	"github.com/mongodb/mongo-go-driver/mongo"
 	"context"
-	"github.com/mongodb/mongo-go-driver/mongo/clientopt"
-	"time"
 	"fmt"
-	"github.com/mongodb/mongo-go-driver/mongo/findopt"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // 任务的执行时间点
 type TimePoint struct {
-	StartTime int64	`bson:"startTime"`
-	EndTime int64	`bson:"endTime"`
+	StartTime int64 `bson:"startTime"`
+	EndTime   int64 `bson:"endTime"`
 }
 
 // 一条日志
 type LogRecord struct {
-	JobName string	`bson:"jobName"` // 任务名
-	Command string `bson:"command"` // shell命令
-	Err string `bson:"err"` // 脚本错误
-	Content string `bson:"content"`// 脚本输出
-	TimePoint TimePoint `bson:"timePoint"`// 执行时间点
+	JobName   string    `bson:"jobName"`   // 任务名
+	Command   string    `bson:"command"`   // shell命令
+	Err       string    `bson:"err"`       // 脚本错误
+	Content   string    `bson:"content"`   // 脚本输出
+	TimePoint TimePoint `bson:"timePoint"` // 执行时间点
 }
 
 // jobName过滤条件
 type FindByJobName struct {
-	JobName string `bson:"jobName"`	// JobName赋值为job10
+	JobName string `bson:"jobName"` // JobName赋值为job10
 }
 
 func main() {
 	// mongodb读取回来的是bson, 需要反序列为LogRecord对象
 	var (
-		client *mongo.Client
-		err error
-		database *mongo.Database
+		client     *mongo.Client
+		err        error
+		database   *mongo.Database
 		collection *mongo.Collection
-		cond *FindByJobName
-		cursor mongo.Cursor
-		record *LogRecord
+		cond       *FindByJobName
+		cursor     mongo.Cursor
+		record     *LogRecord
 	)
 	// 1, 建立连接
-	if client, err = mongo.Connect(context.TODO(), "mongodb://36.111.184.221:27017", clientopt.ConnectTimeout(5 * time.Second)); err != nil {
+	if client, err = mongo.Connect(context.TODO(), "mongodb://36.111.184.221:27017", clientopt.ConnectTimeout(5*time.Second)); err != nil {
 		fmt.Println(err)
 		return
 	}
@@ -53,7 +52,7 @@ func main() {
 	collection = database.Collection("log")
 
 	// 4, 按照jobName字段过滤, 想找出jobName=job10, 找出5条
-	cond = &FindByJobName{JobName: "job10"}	// {"jobName": "job10"}
+	cond = &FindByJobName{JobName: "job10"} // {"jobName": "job10"}
 
 	// 5, 查询（过滤 +翻页参数）
 	if cursor, err = collection.Find(context.TODO(), cond, findopt.Skip(0), findopt.Limit(2)); err != nil {

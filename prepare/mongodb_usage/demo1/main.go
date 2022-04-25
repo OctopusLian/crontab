@@ -1,22 +1,22 @@
 package main
 
 import (
-	"github.com/mongodb/mongo-go-driver/mongo"
 	"context"
-	"github.com/mongodb/mongo-go-driver/mongo/clientopt"
-	"time"
 	"fmt"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func main() {
 	var (
-		client *mongo.Client
-		err error
-		database *mongo.Database
+		client     *mongo.Client
+		err        error
+		database   *mongo.Database
 		collection *mongo.Collection
 	)
 	// 1, 建立连接
-	if client, err = mongo.Connect(context.TODO(), "mongodb://36.111.184.221:27017", clientopt.ConnectTimeout(5 * time.Second)); err != nil {
+	if client, err = mongo.Connect(context.TODO(), "mongodb://36.111.184.221:27017", clientopt.ConnectTimeout(5*time.Second)); err != nil {
 		fmt.Println(err)
 		return
 	}
